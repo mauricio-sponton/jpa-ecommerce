@@ -2,6 +2,8 @@ package com.mbs.algaworks.ecommerce.criteria;
 
 import com.mbs.algaworks.ecommerce.EntityManagerTest;
 import com.mbs.algaworks.ecommerce.dto.ProdutoDTO;
+import com.mbs.algaworks.ecommerce.model.Cliente;
+import com.mbs.algaworks.ecommerce.model.Cliente_;
 import com.mbs.algaworks.ecommerce.model.Pedido;
 import com.mbs.algaworks.ecommerce.model.Produto;
 import org.junit.Assert;
@@ -16,6 +18,22 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class BasicoCriteriaTest extends EntityManagerTest {
+
+    @Test
+    public void ordenarResultados() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Cliente> criteriaQuery = criteriaBuilder.createQuery(Cliente.class);
+        Root<Cliente> root = criteriaQuery.from(Cliente.class);
+
+        criteriaQuery.orderBy(criteriaBuilder.desc(root.get(Cliente_.nome)));
+
+        TypedQuery<Cliente> typedQuery = entityManager.createQuery(criteriaQuery);
+
+        List<Cliente> lista = typedQuery.getResultList();
+        Assert.assertFalse(lista.isEmpty());
+
+        lista.forEach(c -> System.out.println(c.getId() + ", " + c.getNome()));
+    }
 
     @Test
     public void projetarResultadoDTO(){
